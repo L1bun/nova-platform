@@ -1,0 +1,20 @@
+services:
+  localstack:
+    container_name: nova-platform-localstack
+    image: localstack/localstack:3.8
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - SERVICES=s3,iam,ec2,sts,logs,cloudwatch
+      - DEBUG=0
+      - PERSISTENCE=1
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - "./.localstack-data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

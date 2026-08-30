@@ -1,0 +1,59 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: team-edit
+  namespace: dev
+rules:
+  - apiGroups: ["", "apps", "batch"]
+    resources: ["pods", "deployments", "replicasets", "services", "configmaps", "jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: team-edit
+  namespace: checkout
+rules:
+  - apiGroups: ["", "apps", "batch"]
+    resources: ["pods", "deployments", "replicasets", "services", "configmaps", "jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-team-sa
+  namespace: dev
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: checkout-team-sa
+  namespace: checkout
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-team-binding
+  namespace: dev
+subjects:
+  - kind: ServiceAccount
+    name: platform-team-sa
+    namespace: dev
+roleRef:
+  kind: Role
+  name: team-edit
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: checkout-team-binding
+  namespace: checkout
+subjects:
+  - kind: ServiceAccount
+    name: checkout-team-sa
+    namespace: checkout
+roleRef:
+  kind: Role
+  name: team-edit
+  apiGroup: rbac.authorization.k8s.io
