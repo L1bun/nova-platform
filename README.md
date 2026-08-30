@@ -1,6 +1,6 @@
 # NovaPlatform
 
-A self-service internal developer platform, built and run entirely on a laptop. NovaPlatform simulates what a platform engineering team builds at a real company — GitOps-driven deployments, reusable Helm charts, namespace-scoped RBAC, cluster monitoring, and a CLI that lets a developer spin up a fully working environment with one command — without needing an AWS account. Infrastructure is provisioned against [LocalStack](https://www.localstack.cloud/) via Terraform, and workloads run on a local [kind](https://kind.sigs.k8s.io/) (Kubernetes-in-Docker) cluster.
+A self-service internal developer platform, built and run entirely on a laptop. NovaPlatform simulates what a platform engineering team builds at a real company  GitOps-driven deployments, reusable Helm charts, namespace-scoped RBAC, cluster monitoring, and a CLI that lets a developer spin up a fully working environment with one command  without needing an AWS account. Infrastructure is provisioned against [LocalStack](https://www.localstack.cloud/) via Terraform, and workloads run on a local [kind](https://kind.sigs.k8s.io/) (Kubernetes-in-Docker) cluster.
 
 ## Architecture
 
@@ -13,10 +13,10 @@ Two repos, cleanly separated by concern:
 ## What's Implemented
 
 ### Infrastructure (Terraform + LocalStack)
-A VPC with public/private subnets across two AZs, an Internet Gateway, IAM roles and policies, and S3 buckets for Terraform state and GitOps artifacts — all provisioned against LocalStack's AWS API emulation, cost-tagged (`Team`, `Environment`, `CostCenter`) as they would be in a real account.
+A VPC with public/private subnets across two AZs, an Internet Gateway, IAM roles and policies, and S3 buckets for Terraform state and GitOps artifacts all provisioned against LocalStack's AWS API emulation, cost-tagged (`Team`, `Environment`, `CostCenter`) as they would be in a real account.
 
 ### GitOps (Argo CD)
-Argo CD watches `nova-platform-gitops` and auto-syncs changes into the cluster, with self-healing enabled — manual `kubectl` drift gets reverted automatically.
+Argo CD watches `nova-platform-gitops` and auto-syncs changes into the cluster, with self-healing enabled  manual `kubectl` drift gets reverted automatically.
 
 ![Argo CD Applications](docs/screenshots/argocd-all-apps.png)
 
@@ -44,7 +44,7 @@ kubectl auth can-i get pods -n dev      --as=system:serviceaccount:checkout:chec
 ```
 
 ### nova CLI
-A Typer-based CLI that orchestrates the whole stack — one command creates a namespace, applies RBAC, writes a values file into the GitOps repo, commits and pushes it, and creates the Argo CD Application to deploy it:
+A Typer-based CLI that orchestrates the whole stack one command creates a namespace, applies RBAC, writes a values file into the GitOps repo, commits and pushes it, and creates the Argo CD Application to deploy it:
 
 ```
 nova env create staging   # namespace + RBAC + GitOps push + Argo CD Application, end to end
@@ -88,7 +88,7 @@ python3 nova.py env create dev
 ## Design Decisions
 
 - **Two repos, not one.** Mirrors how real platform teams separate infra (owned by the platform team) from GitOps content (owned by whoever's shipping). Makes the CLI's `git push` step meaningful rather than cosmetic.
-- **Python/Typer over Go/Cobra for the CLI.** Faster iteration without a compile step, at the cost of a single static binary — a reasonable tradeoff for a tool that's evolving quickly, worth revisiting if this were a widely-distributed internal tool.
+- **Python/Typer over Go/Cobra for the CLI.** Faster iteration without a compile step, at the cost of a single static binary a reasonable tradeoff for a tool that's evolving quickly, worth revisiting if this were a widely-distributed internal tool.
 - **LocalStack over a real AWS account.** Lets the Terraform layer, IAM structure, and cost-tagging strategy be built and demonstrated without any cloud spend, while staying honest about what's simulated vs. real (see below).
 - **RBAC verified programmatically, not just applied.** `kubectl auth can-i` checks are part of the workflow, not just the manifests — the point of namespace-scoped RBAC is that it's provably enforced.
 
