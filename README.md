@@ -4,7 +4,7 @@ A self-service internal developer platform, built and run entirely on a laptop. 
 
 ## Architecture
 
-![NovaPlatform architecture](docs/nova-platform-architecture.svg)
+![NovaPlatform architecture](docs/nova-platform-architecture.webp)
 
 Two repos, cleanly separated by concern:
 - **[nova-platform](https://github.com/L1bun/nova-platform)** (this repo) — Terraform, cluster bootstrap config, RBAC policy, Argo CD `Application` definitions, and the `nova` CLI. Owned by the platform, changed rarely.
