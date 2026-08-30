@@ -5,3 +5,6 @@
 **/tfplan
 .localstack-data/
 .DS_Store
+cli/.venv/
+__pycache__/
+*.pyc
